@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Increment
+
+Increment is a proof-of-concept LLM request cost estimation tool. It demonstrates rapid MVP development through pragmatic trade-offs and assumptions. Built using real data APIs and robust backend calculation logic, it helps developers and product managers predict the cost of using APIs for text-based AI interactions. The dashboard analyses input/output tokens to calculate potential costs, and provides visualisations and breakdowns of usage patterns. Currently, a demo, it shows key features such as interactive cost analysis charts, usage reports and predictive calculations based on historical data. The project emphasises practical development priorities - implementing core functionality and data handling while maintaining a foundation for future testing and scalability. This approach demonstrates effective MVP development by focusing on key features while establishing a solid architectural foundation.
 
 ## Getting Started
 
@@ -16,21 +18,3 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
