@@ -7,7 +7,7 @@ from api.models.usage import UsageItem, UsageResponse
 from api.utils.credits import calculate_credits
 
 # Create FastAPI instance with custom docs and openapi url
-app = FastAPI(docs_url="/docs", openapi_url="/openapi.json")
+app = FastAPI(docs_url="/api/docs", openapi_url="/api/openapi.json")
 
 # Sample queries remain the same
 SAMPLE_QUERIES = [
@@ -29,7 +29,7 @@ SAMPLE_QUERIES = [
 ]
 
 
-@app.get("/v1/users/{user_id}/messages", response_model=dict)
+@app.get("/api/v1/users/{user_id}/messages", response_model=dict)
 async def get_user_messages(user_id: int):
     if user_id != 1:
         raise HTTPException(status_code=404, detail="User not found")
@@ -59,14 +59,14 @@ async def get_user_messages(user_id: int):
     return {"messages": messages}
 
 
-@app.get("/v1/messages/{user_id}/current", response_model=Messages)
+@app.get("/api/v1/messages/{user_id}/current", response_model=Messages)
 async def get_current_period_messages(user_id: int):
     response = await get_user_messages(user_id)
     messages = [Message(**msg) for msg in response["messages"]]
     return Messages(messages=messages)
 
 
-@app.get("/v1/reports/{report_id}", response_model=Report)
+@app.get("/api/v1/reports/{report_id}", response_model=Report)
 async def get_report(report_id: int):
     report_data = {
         5392: {"id": 5392, "name": "Tenant Obligations Report", "credit_cost": 5.0},
@@ -84,7 +84,7 @@ async def get_report(report_id: int):
     return Report(**report_data[report_id])
 
 
-@app.get("/v1/users/{user_id}/usage", response_model=UsageResponse)
+@app.get("/api/v1/users/{user_id}/usage", response_model=UsageResponse)
 async def get_usage(user_id: int):
     if user_id != 1:
         raise HTTPException(status_code=404, detail="User not found")
