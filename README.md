@@ -15,6 +15,30 @@ pnpm dev
 # or
 bun dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Backend
+FastAPI for backend
+
+```
+/v1/* routes to the API server
+/docs to the FastAPI documentation
+/openapi.json to the OpenAPI schema
+```
+
+### Development
+First, create and activate a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### Testing
+Testing backend with pytest:
+
+```bash
+# Add the project root to PYTHONPATH
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+pnpm test:be
+```

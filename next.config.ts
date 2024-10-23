@@ -1,7 +1,25 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  rewrites: async () => {
+    const baseUrl =
+      process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+
+    return [
+      {
+        source: '/v1/:path*',
+        destination: `${baseUrl}/v1/:path*`,
+      },
+      {
+        source: '/docs',
+        destination: `${baseUrl}/docs`,
+      },
+      {
+        source: '/openapi.json',
+        destination: `${baseUrl}/openapi.json`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
