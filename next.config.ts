@@ -3,7 +3,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   rewrites: async () => {
     const baseUrl =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:8000/'
+        : '/api';
 
     return [
       {
