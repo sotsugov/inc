@@ -23,21 +23,22 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { UsageReport } from '@/types/usage';
-import { TableSkeleton } from './usage-table-skeleton';
 import { formatTimestamp } from '@/lib/utils';
+import DashboardSkeleton from './dashboard-skeleton';
+import CreditBarChart from './credit-chart';
 
 interface UsageTableProps {
   userId: number;
 }
 
-export default function UsageTable({ userId }: UsageTableProps) {
+export default function UsageDashboard({ userId }: UsageTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [reports, setReports] = useState<UsageReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize sorting state from URL parameters
+  // Initialise sorting state from URL parameters
   const initializeSortingState = (): SortingState => {
     const sortParams = searchParams.getAll('sort');
     return sortParams.map((param) => {
@@ -189,17 +190,16 @@ export default function UsageTable({ userId }: UsageTableProps) {
   });
 
   if (loading) {
-    return <TableSkeleton />;
+    return <DashboardSkeleton />;
   }
 
   if (error) {
-    return (
-      <div className="w-full p-4 text-center text-red-500">Error: {error}</div>
-    );
+    return <div className="w-full p-4">Error loading dashboard: {error}</div>;
   }
 
   return (
-    <div className="w-full">
+    <div className="flex flex-col gap-8">
+      <CreditBarChart reports={reports} />
       <Table className="w-full">
         <TableCaption>A list of recent usage reports</TableCaption>
         <TableHeader>

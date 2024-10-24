@@ -1,23 +1,36 @@
+import { Card, CardHeader, CardContent, CardFooter } from './ui/card';
+import { Skeleton } from './ui/skeleton';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
+  TableHead,
+  TableBody,
+  TableCell,
+  Table,
+} from './ui/table';
 
-export function TableSkeleton() {
+export default function DashboardSkeleton() {
   const columns = [
     { key: 'message_id', className: 'w-[15%]' },
     { key: 'timestamp', className: 'w-[15%]' },
     { key: 'report_name', className: 'w-[40%]' },
     { key: 'credits_used', className: 'w-[30%]' },
   ];
-
   return (
-    <div className="w-full">
+    <div className="flex flex-col gap-8">
+      <Card className="w-full">
+        <CardHeader>
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </CardHeader>
+        <CardContent className="h-[220px]">
+          <Skeleton className="h-full w-full" />
+        </CardContent>
+        <CardFooter className="flex-col items-start gap-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </CardFooter>
+      </Card>
       <Table className="w-full">
         <TableHeader>
           <TableRow>
