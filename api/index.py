@@ -24,7 +24,7 @@ SAMPLE_QUERIES = [
     ("Explain the significance of the Byzantine Empire", None),
     ("What made Alfred Hitchcock's filming techniques revolutionary?", None),
     ("How did the Renaissance change European art and culture?", None),
-    ("What was the impact of sound on early cinema?", None),
+    ("What was the impact of sound on early cinema?", 3345),
     ("Who were the key figures in the Civil Rights Movement?", None),
 ]
 
@@ -69,13 +69,14 @@ async def get_current_period_messages(user_id: int):
 @app.get("/api/v1/reports/{report_id}", response_model=Report)
 async def get_report(report_id: int):
     report_data = {
-        5392: {"id": 5392, "name": "Tenant Obligations Report", "credit_cost": 5.0},
+        3345: {"id": 3345, "name": "Discounted Demo Report", "credit_cost": 1.0},
+        5392: {"id": 5392, "name": "Customised Usage Report", "credit_cost": 5.0},
         8806: {
             "id": 8806,
-            "name": "Maintenance Responsibilities Report",
+            "name": "Fully Constructed Report",
             "credit_cost": 4.0,
         },
-        1124: {"id": 1124, "name": "Short Lease Report", "credit_cost": 3.0},
+        1124: {"id": 1124, "name": "Short Report", "credit_cost": 3.0},
     }
 
     if report_id not in report_data:
@@ -89,7 +90,7 @@ async def get_usage(user_id: int):
     if user_id != 1:
         raise HTTPException(status_code=404, detail="User not found")
 
-    messages = (await get_current_period_messages()).messages
+    messages = (await get_current_period_messages(user_id)).messages
     usage = []
 
     for message in messages:
