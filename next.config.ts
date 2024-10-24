@@ -1,24 +1,27 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   rewrites: async () => {
-    const baseUrl =
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:8000/'
-        : '/api/';
-
     return [
       {
-        source: '/v1/:path*',
-        destination: `${baseUrl}/v1/:path*`,
+        source: '/api/:path*',
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8000/api/:path*'
+            : '/api/',
       },
       {
         source: '/docs',
-        destination: `${baseUrl}/docs`,
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8000/api/docs'
+            : '/api/docs',
       },
       {
         source: '/openapi.json',
-        destination: `${baseUrl}/openapi.json`,
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8000/api/openapi.json'
+            : '/api/openapi.json',
       },
     ];
   },
