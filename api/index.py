@@ -31,7 +31,7 @@ SAMPLE_QUERIES = [
 
 @app.get("/api/v1/users/{user_id}/messages", response_model=dict)
 async def get_user_messages(user_id: int):
-    if user_id != 1:
+    if user_id not in [1, 2, 3]:
         raise HTTPException(status_code=404, detail="User not found")
 
     end_date = datetime.now()
@@ -87,7 +87,7 @@ async def get_report(report_id: int):
 
 @app.get("/api/v1/users/{user_id}/usage", response_model=UsageResponse)
 async def get_usage(user_id: int):
-    if user_id != 1:
+    if user_id not in [1, 2, 3]:
         raise HTTPException(status_code=404, detail="User not found")
 
     messages = (await get_current_period_messages(user_id)).messages
