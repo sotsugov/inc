@@ -20,12 +20,6 @@ jest.mock('../theme-dropdown', () => ({
 }));
 
 describe('SiteHeader', () => {
-  const mockUser = {
-    id: 1,
-    username: 'testuser',
-    avatar: 'https://example.com/avatar.jpg',
-  };
-
   it('renders correctly', () => {
     render(<SiteHeader />);
 
