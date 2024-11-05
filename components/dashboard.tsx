@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
@@ -36,10 +36,9 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
   const searchParams = useSearchParams();
   const [reports, setReports] = useState<UsageReport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Initialise sorting state from URL parameters
-  const initializeSortingState = (): SortingState => {
+  // Memoize the initial sorting state
+  const initialSortingState = useMemo(() => {
     const sortParams = searchParams.getAll('sort');
     return sortParams.map((param) => {
       const [id, direction] = param.split(':');
@@ -48,18 +47,16 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
         desc: direction === 'desc',
       };
     });
-  };
+  }, [searchParams]);
 
-  const [sorting, setSorting] = useState<SortingState>(
-    initializeSortingState(),
-  );
+  const [sorting, setSorting] = useState<SortingState>(initialSortingState);
 
   // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`api/v1/users/${userId}/usage`, {
+        const res = await fetch(`/api/v1/users/${userId}/usage`, {
           next: { revalidate: 60 },
         });
 
@@ -70,7 +67,6 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
         const data = await res.json();
         setReports(data.usage);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
         console.error('Failed to fetch usage reports:', err);
       } finally {
         setLoading(false);
@@ -80,58 +76,63 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
     fetchData();
   }, [userId]);
 
-  // Update URL when sorting changes
-  const updateURL = (newSorting: SortingState) => {
-    const params = new URLSearchParams(searchParams.toString());
+  // Memoize the updateURL function
+  const updateURL = useCallback(
+    (newSorting: SortingState) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    // Remove all existing sort parameters
-    const existingParams = Array.from(params.keys());
-    existingParams.forEach((key) => {
-      if (key === 'sort') params.delete(key);
-    });
+      // Remove all existing sort parameters
+      params.delete('sort');
 
-    // Add new sort parameters
-    newSorting.forEach((sort) => {
-      params.append('sort', `${sort.id}:${sort.desc ? 'desc' : 'asc'}`);
-    });
+      // Add new sort parameters
+      newSorting.forEach((sort) => {
+        params.append('sort', `${sort.id}:${sort.desc ? 'desc' : 'asc'}`);
+      });
 
-    router.push(`?${params.toString()}`, { scroll: false });
-  };
-
-  const handleSort = (columnId: string, currentSortDir: string | false) => {
-    let newSorting: SortingState;
-
-    if (!currentSortDir) {
-      newSorting = [...sorting, { id: columnId, desc: false }];
-    } else if (currentSortDir === 'asc') {
-      newSorting = sorting.map((sort) =>
-        sort.id === columnId ? { ...sort, desc: true } : sort,
-      );
-    } else {
-      newSorting = sorting.filter((sort) => sort.id !== columnId);
-    }
-
-    setSorting(newSorting);
-    updateURL(newSorting);
-  };
-
-  const columns: ColumnDef<UsageReport>[] = [
-    {
-      accessorKey: 'message_id',
-      header: 'Message ID',
-      cell: ({ row }) => <div>{row.getValue('message_id')}</div>,
+      router.push(`?${params.toString()}`, { scroll: false });
     },
-    {
-      accessorKey: 'timestamp',
-      header: 'Timestamp',
-      cell: ({ row }) => (
-        <div>{formatTimestamp(row.getValue('timestamp'))}</div>
-      ),
+    [router, searchParams],
+  );
+
+  // Memoize the handleSort function
+  const handleSort = useCallback(
+    (columnId: string, currentSortDir: string | false) => {
+      let newSorting: SortingState;
+
+      if (!currentSortDir) {
+        newSorting = [...sorting, { id: columnId, desc: false }];
+      } else if (currentSortDir === 'asc') {
+        newSorting = sorting.map((sort) =>
+          sort.id === columnId ? { ...sort, desc: true } : sort,
+        );
+      } else {
+        newSorting = sorting.filter((sort) => sort.id !== columnId);
+      }
+
+      setSorting(newSorting);
+      updateURL(newSorting);
     },
-    {
-      accessorKey: 'report_name',
-      header: ({ column }) => {
-        return (
+    [sorting, updateURL],
+  );
+
+  // Memoize the columns definition
+  const columns = useMemo<ColumnDef<UsageReport>[]>(
+    () => [
+      {
+        accessorKey: 'message_id',
+        header: 'Message ID',
+        cell: ({ row }) => <div>{row.getValue('message_id')}</div>,
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Timestamp',
+        cell: ({ row }) => (
+          <div>{formatTimestamp(row.getValue('timestamp'))}</div>
+        ),
+      },
+      {
+        accessorKey: 'report_name',
+        header: ({ column }) => (
           <Button
             variant="ghost"
             onClick={() => handleSort('report_name', column.getIsSorted())}
@@ -145,14 +146,12 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
               <ArrowUpDown className="ml-2 size-4" />
             )}
           </Button>
-        );
+        ),
+        cell: ({ row }) => <div>{row.getValue('report_name') || ''}</div>,
       },
-      cell: ({ row }) => <div>{row.getValue('report_name') || ''}</div>,
-    },
-    {
-      accessorKey: 'credits_used',
-      header: ({ column }) => {
-        return (
+      {
+        accessorKey: 'credits_used',
+        header: ({ column }) => (
           <Button
             variant="ghost"
             className="float-right"
@@ -167,15 +166,16 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
               <ArrowUpDown className="ml-2 size-4" />
             )}
           </Button>
-        );
+        ),
+        cell: ({ row }) => (
+          <div className="text-right">
+            {Number(row.getValue('credits_used')).toFixed(2)}
+          </div>
+        ),
       },
-      cell: ({ row }) => (
-        <div className="text-right">
-          {Number(row.getValue('credits_used')).toFixed(2)}
-        </div>
-      ),
-    },
-  ];
+    ],
+    [handleSort],
+  );
 
   const table = useReactTable({
     data: reports,
@@ -191,10 +191,6 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
 
   if (loading) {
     return <DashboardSkeleton />;
-  }
-
-  if (error) {
-    return <div className="w-full p-4">Error loading dashboard: {error}</div>;
   }
 
   return (

@@ -115,14 +115,12 @@ export default function CreditBarChart({ reports }: CreditBarChartProps) {
             )}
           </CardDescription>
         </CardHeader>
-        <CardContent className="h-[220px] w-full">
-          <ChartContainer config={chartConfig}>
-            <BarChart
-              width={600}
-              height={200}
-              accessibilityLayer
-              data={chartData}
-            >
+        <CardContent>
+          <ChartContainer
+            config={chartConfig}
+            className="min-h-[200px] max-h-[210px] w-full"
+          >
+            <BarChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="date"

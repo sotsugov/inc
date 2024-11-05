@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ModeToggle } from "./theme-dropdown";
+import Link from 'next/link';
+import { ModeToggle } from './theme-dropdown';
 
 export function SiteHeader() {
   return (
