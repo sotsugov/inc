@@ -26,6 +26,7 @@ import { UsageReport } from '@/types/usage';
 import { formatTimestamp } from '@/lib/utils';
 import DashboardSkeleton from './dashboard-skeleton';
 import CreditBarChart from './credit-chart';
+import { getUsageByUserId } from '@/app/api/getUsage';
 
 interface UsageTableProps {
   userId: number;
@@ -56,16 +57,14 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/v1/users/${userId}/usage`, {
-          next: { revalidate: 60 },
-        });
 
-        if (!res.ok) {
+        const reports = await getUsageByUserId(userId);
+
+        if (!reports) {
           throw new Error('Failed to fetch usage data');
         }
 
-        const data = await res.json();
-        setReports(data.usage);
+        setReports(reports);
       } catch (err) {
         console.error('Failed to fetch usage reports:', err);
       } finally {
