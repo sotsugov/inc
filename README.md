@@ -25,5 +25,5 @@ pnpm test
 ```
 
 ## Backend
-Uses a separate Fast API app for backend [https://github.com/sotsugov/inc-api](sotsugov/inc-api)
+Uses a separate Fast API app for backend [sotsugov/inc-api](https://github.com/sotsugov/inc-api)
 
