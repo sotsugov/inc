@@ -5,7 +5,7 @@
   "scripts": {
     "next-dev": "next dev --turbopack",
     "dev": "npm run next-dev",
-    "test:fe": "jest",
+    "test": "jest",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

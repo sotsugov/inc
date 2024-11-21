@@ -6,42 +6,12 @@ Increment is a proof-of-concept LLM request cost estimation tool. It demonstrate
 
 ## Getting Started
 
-## Backend
-FastAPI for backend
-
-```
-/api/v1/* routes to the API server
-/api/docs to the FastAPI documentation
-/api/openapi.json to the OpenAPI schema
-```
-
-### Development
-First, create and activate a virtual environment:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### Testing
-Testing backend with pytest:
-
-```bash
-# Add the project root to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:$(pwd)
-pnpm test:be
-```
-
 ## Frontend
 Next.JS with shadcn for frontend
 
 ### Development
 
 ```bash
-# frontend only
-pnpm next-dev
-
-# both fe and be
 pnpm dev
 ```
 
@@ -51,5 +21,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Testing frontend with jest:
 
 ```bash
-pnpm test:fe
+pnpm test
 ```
+
+## Backend
+Uses a separate Fast API app for backend [https://github.com/sotsugov/inc-api](sotsugov/inc-api)
+
