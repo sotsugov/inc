@@ -156,7 +156,7 @@ export function CreditChart({ reports }: CreditChartProps) {
               fill="var(--color-credits)"
               radius={[6, 6, 0, 0]}
               activeBar={
-                <Rectangle fill="hsl(var(--chart-2))" radius={[6, 6, 0, 0]} />
+                <Rectangle fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
               }
               maxBarSize={28}
             />

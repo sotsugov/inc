@@ -14,9 +14,9 @@ jest.mock('next/link', () => {
   return NextLink;
 });
 
-// Mock the ModeToggle component
+// Mock the ModeSwitcher component
 jest.mock('../theme-dropdown', () => ({
-  ModeToggle: () => <div data-testid="mode-toggle">Mode Toggle</div>,
+  ModeSwitcher: () => <div data-testid="mode-toggle">Mode Toggle</div>,
 }));
 
 describe('SiteHeader', () => {

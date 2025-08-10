@@ -104,6 +104,45 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+// Minimal types to avoid tight coupling to Recharts' complex generics
+type TooltipValue = number | string | Array<number | string>;
+type TooltipName = number | string;
+
+interface ChartTooltipItem {
+  name?: TooltipName;
+  dataKey?: string | number;
+  value?: TooltipValue;
+  color?: string;
+  payload?: Record<string, unknown> & { fill?: string };
+}
+
+type ChartTooltipItems = ChartTooltipItem[];
+
+interface ChartTooltipContentProps
+  extends Omit<React.ComponentProps<'div'>, 'children'> {
+  active?: boolean;
+  payload?: ChartTooltipItems;
+  label?: unknown;
+  labelFormatter?: (
+    label: unknown,
+    payload: ChartTooltipItems,
+  ) => React.ReactNode;
+  labelClassName?: string;
+  formatter?: (
+    value: TooltipValue,
+    name: TooltipName,
+    item: ChartTooltipItem,
+    index: number,
+    payload: ChartTooltipItems,
+  ) => React.ReactNode;
+  color?: string;
+  nameKey?: string;
+  labelKey?: string;
+  hideLabel?: boolean;
+  hideIndicator?: boolean;
+  indicator?: 'line' | 'dot' | 'dashed';
+}
+
 function ChartTooltipContent({
   active,
   payload,
@@ -118,14 +157,7 @@ function ChartTooltipContent({
   color,
   nameKey,
   labelKey,
-}: React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-  React.ComponentProps<'div'> & {
-    hideLabel?: boolean;
-    hideIndicator?: boolean;
-    indicator?: 'line' | 'dot' | 'dashed';
-    nameKey?: string;
-    labelKey?: string;
-  }) {
+}: ChartTooltipContentProps) {
   const { config } = useChart();
 
   const tooltipLabel = React.useMemo(() => {
@@ -179,21 +211,21 @@ function ChartTooltipContent({
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload.map((item, index) => {
+        {(payload ?? []).map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || 'value'}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
-          const indicatorColor = color || item.payload.fill || item.color;
+          const indicatorColor = color || item.payload?.fill || item.color;
 
           return (
             <div
-              key={item.dataKey}
+              key={String(item.dataKey ?? item.name ?? index)}
               className={cn(
                 '[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5',
                 indicator === 'dot' && 'items-center',
               )}
             >
               {formatter && item?.value !== undefined && item.name ? (
-                formatter(item.value, item.name, item, index, item.payload)
+                formatter(item.value, item.name, item, index, payload ?? [])
               ) : (
                 <>
                   {itemConfig?.icon ? (
@@ -256,14 +288,20 @@ function ChartLegendContent({
   payload,
   verticalAlign = 'bottom',
   nameKey,
-}: React.ComponentProps<'div'> &
-  Pick<RechartsPrimitive.LegendProps, 'payload' | 'verticalAlign'> & {
-    hideIcon?: boolean;
-    nameKey?: string;
-  }) {
+}: React.ComponentProps<'div'> & {
+  payload?: Array<{
+    value?: string | number | undefined;
+    color?: string;
+    dataKey?: string | number | undefined;
+    payload?: Record<string, unknown> | undefined;
+  }>;
+  verticalAlign?: 'top' | 'bottom' | 'middle';
+  hideIcon?: boolean;
+  nameKey?: string;
+}) {
   const { config } = useChart();
 
-  if (!payload?.length) {
+  if (!payload || payload.length === 0) {
     return null;
   }
 
@@ -275,13 +313,13 @@ function ChartLegendContent({
         className,
       )}
     >
-      {payload.map((item) => {
+      {(payload ?? []).map((item, index) => {
         const key = `${nameKey || item.dataKey || 'value'}`;
         const itemConfig = getPayloadConfigFromPayload(config, item, key);
 
         return (
           <div
-            key={item.value}
+            key={String(item.value ?? index)}
             className={cn(
               '[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3',
             )}
