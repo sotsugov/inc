@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter as Font_Sans } from 'next/font/google';
+import { Spline_Sans as Font_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 

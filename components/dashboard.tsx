@@ -25,7 +25,7 @@ import {
 import { UsageReport } from '@/types/usage';
 import { formatTimestamp } from '@/lib/utils';
 import DashboardSkeleton from './dashboard-skeleton';
-import CreditBarChart from './credit-chart';
+import { CreditChart } from './credit-chart';
 import { getUsageByUserId } from '@/app/api/getUsage';
 
 interface UsageTableProps {
@@ -194,7 +194,7 @@ export default function UsageDashboard({ userId }: UsageTableProps) {
 
   return (
     <div className="flex flex-col gap-8">
-      <CreditBarChart reports={reports} />
+      <CreditChart reports={reports} />
       <Table className="w-full">
         <TableCaption>A list of recent usage reports</TableCaption>
         <TableHeader>
